@@ -1,7 +1,5 @@
 #include <stdio.h>
 #define block 8
-
-
 int Chess(int chess[block][block] , int x , int y){
     int rx , ry , dx , dy;
 
@@ -27,39 +25,17 @@ int Chess(int chess[block][block] , int x , int y){
                         ry += dy;
                     }
                     else if(chess[ry][rx] == 0 && chess[ry-dy][rx-dx] != chess[y][x]){
+                        chess[ry][rx] = 3;
                         printf("(%d , %d)\n", rx , ry);
                         break;
                     }
-                        else{break;}
-                    }
+                    else{break;}
+                }
                 }
             }
-        }    
+        }
     }
     return 1;
-}
-void judge(int chess[block][block]){
-    int x , y;
-    printf("白子可以下的地方:\n");
-    for(int i=0 ; i<block ; i++){
-        for(int j=0 ; j<block ; j++){
-            if(chess[i][j] == 1){
-                x = j;
-                y = i;
-                Chess(chess , x , y);
-            }
-        }
-    }
-    printf("黑子可以下的地方:\n");
-    for(int i=0 ; i<block ; i++){
-        for(int j=0 ; j<block ; j++){
-            if(chess[i][j] == 2){
-                x = j;
-                y = i;
-                Chess(chess , x , y);
-            }
-        }
-    }
 }
 
 int main(){
@@ -73,9 +49,9 @@ int main(){
                  {0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0}
                 };
-    
-    printf("0 空格 1 黑子 2 白子\n");
-    judge(chess);
+    int x , y ;
+    scanf("%d %d", &x , &y);
+    Chess(chess , x , y);
     
     for(int i=0 ; i<block ; i++){
         for(int j=0 ; j<block ; j++){
