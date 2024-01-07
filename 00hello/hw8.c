@@ -1,77 +1,79 @@
-#include<stdio.h>
-#define way 2
-struct stack
-{
-    top(){
+#include <stdio.h>
+#define MAX_N 10
 
-    }
-    push(){
+typedef struct {
+    int x;
+    int y;
+} Point;
 
-    }
-    pop(){
-
-    }
-    ifempty(){
-
-    }
-    iffull(){
-
-    }
+int maze[MAX_N][MAX_N] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {0, 0, 0, 1, 1, 0, 1, 1, 0, 1},
+    {1, 0, 1, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 1, 0, 1, 0, 1},
+    {1, 1, 1, 0, 1, 1, 0, 1, 1, 1},
+    {1, 0, 1, 1, 1, 0, 0, 1, 0, 1},
+    {1, 0, 0, 0, 0, 0, 1, 1, 0, 0},
+    {1, 0, 1, 1, 1, 1, 1, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 };
-/*
-void MAZE(int fmaze[way][way]){
-    
-    for(int i=0 ; i<way ; i++){
-        for(int j=0 ; j<way ; j++){
-            scanf("%d",&fmaze[i][j]); //0是牆壁 1是路 random?
-        }
-    }
-};
-*/
 
-int main(){
-    int maze[way][way];
-    maze[way][way] ={
-  { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-  { 0, 0, 0, 1, 1, 0, 1, 1, 0, 1 },
-  { 1, 0, 1, 1, 0, 0, 0, 0, 0, 1 },
-  { 1, 0, 0, 0, 0, 1, 0, 1, 0, 1 },
-  { 1, 1, 1, 0, 1, 1, 0, 1, 1, 1 },
-  { 1, 0, 1, 1, 1, 0, 0, 1, 0, 1 },
-  { 1, 0, 0, 0, 0, 0, 1, 1, 0, 0 },
-  { 1, 0, 1, 1, 1, 1, 1, 0, 0, 1 },
-  { 1, 0, 0, 0, 0, 0, 0, 0, 1, 1 },
-  { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
-    };
-    MAZE(maze);  //迷宮
-
-    int  diry[-1,1,0,0] , dirx[0,0,-1,1] , dx , dy , mice=2; // 0上 1下 2左 3下
-    
-    for(int i=0 ; i<way ; i++){
-        if(maze[0][i] == 0){
-            //push.start
-            maze[0][i] = mice;
-            break;
-        }
-        else if(maze[i][0] == 0){
-            //push.start
-            maze[i][0] = mice;
-            break;
-        }
-        else if(maze[9][i] == 0){
-            //push.start
-            maze[9][i] = mice;
-            break;
-        }
-        else if(maze[i][9] == 0){
-            //push.start
-            maze[i][9] = mice;
-            break;
-        }
-        if()
-            for(int i=0 ; i<4 ; i++){
-                if(dx)
+void printMaze(int n, Point path[], int pathSize) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            int isPath = 0;
+            for (int k = 0; k < pathSize; k++) {
+                if (path[k].x == i && path[k].y == j) {
+                    isPath = 1;
+                    break;
+                }
             }
+            printf("%c ", (maze[i][j] == 1) ? '#' : (isPath ? 'x' : ' '));
+        }
+        printf("\n");
     }
+}
+
+int solveMaze(int startX, int startY, int endX, int endY, int n, Point path[], int pathSize) {
+    if (startX < 0 || startX >= n || startY < 0 || startY >= n || maze[startX][startY] == 1) {
+        return 0;  
+    }
+
+    Point current = {startX, startY};
+    path[pathSize] = current;
+    pathSize++;
+
+    if (startX == endX && startY == endY) {
+        printMaze(n, path, pathSize);  
+        return 1;                      
+    }
+
+    maze[startX][startY] = 1;  
+
+    if (solveMaze(startX, startY + 1, endX, endY, n, path, pathSize) ||  // 向右
+        solveMaze(startX + 1, startY, endX, endY, n, path, pathSize) ||  // 向下
+        solveMaze(startX, startY - 1, endX, endY, n, path, pathSize) ||  // 向左
+        solveMaze(startX - 1, startY, endX, endY, n, path, pathSize)) {   // 向上
+        return 1;  
+    }
+
+    maze[startX][startY] = 0;  
+    return 0;                 
+}
+
+int main() {
+    int n = 10;  
+    Point path[MAX_N * MAX_N];  
+    int pathSize = 0;
+
+    printf("Original Maze:\n");
+    printMaze(n, path, pathSize);
+
+    printf("\nSolving Maze:\n");
+    if (!solveMaze(0, 0, n - 1, n - 1, n, path, pathSize)) {
+        printf("No solution found.\n");
+    }
+
     return 0;
 }
